@@ -14,10 +14,11 @@ import (
 type KubeVault struct {
 	Address string
 	Key     string
+	Role string
 	Client  *api.Client
 }
 
-func NewKubeVault(address string, key string) *KubeVault {
+func NewKubeVault(address string, key string, role string) *KubeVault {
 	client, err := api.NewClient(&api.Config{
 		Address: address,
 	})
@@ -26,7 +27,7 @@ func NewKubeVault(address string, key string) *KubeVault {
 		panic(err)
 	}
 
-	return &KubeVault{Address: address, Key: key, Client: client}
+	return &KubeVault{Address: address, Key: key, Client: client, Role: role}
 }
 
 func (k *KubeVault) login() {
@@ -38,7 +39,7 @@ func (k *KubeVault) login() {
 
 	authParameters := map[string]interface{}{
 		"jwt":  string(jwt[:]),
-		"role": "vaultenv",
+		"role": k.Role,
 	}
 
 	secret, err := k.Client.Logical().Write("/auth/kubernetes/login", authParameters)
@@ -59,10 +60,11 @@ func main() {
 
 	key := flag.String("k", "", "key of secret to be retrieved")
 	address := flag.String("s", "", "server url for vault server")
+	role := flag.String("r", "", "role for auth")
 	flag.Parse()
 
 	args := flag.Args()
-	client := NewKubeVault(*address, *key)
+	client := NewKubeVault(*address, *key, *role)
 	client.login()
 	secret := client.readSecret()
 
