@@ -31,7 +31,7 @@ func NewKubeVault(address string, key string, role string) *KubeVault {
 }
 
 func (k *KubeVault) login() {
-	jwt, err := ioutil.ReadFile("token")
+	jwt, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
 
 	if err != nil {
 		fmt.Printf("token not found")
