@@ -18,5 +18,5 @@ chmod +x /usr/local/bin/vaultenv
 ```
 
 Run your application with it:
-exec /vaultenv -r <role> -k <path to secret> -s <vault_url> process parameters
+```exec /vaultenv -r <role> -k <path to secret> -s <vault_url> process parameters```
 
